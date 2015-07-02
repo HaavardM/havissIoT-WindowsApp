@@ -1,0 +1,34 @@
+﻿<SettingsFlyout
+    x:Class="HavissIoT.newSensor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HavissIoT"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    IconSource="Assets/SmallLogo.png"
+    Title="Sensor information" Height="760.255" Width="391.176">
+
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel Style="{StaticResource SettingsFlyoutSectionStyle}">
+            <TextBlock Text="Sensor information" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="Name:" Style="{StaticResource BodyTextBlockStyle}"/>
+            <StackPanel Margin="0,7,0,0" Orientation="Horizontal">
+                <TextBox x:Name="sensor_name" HorizontalAlignment="Left" Width="300"/>
+            </StackPanel>
+            <TextBlock Text="Topic:" Style="{StaticResource BodyTextBlockStyle}"/>
+            <StackPanel Margin="0,7,0,0" Orientation="Horizontal">
+                <TextBox x:Name="sensor_topic" HorizontalAlignment="Left" Width="300"/>
+            </StackPanel>
+            <TextBlock Text="Type:" Style="{StaticResource BodyTextBlockStyle}"/>
+            <StackPanel Margin="0,7,0,0" Orientation="Horizontal">
+                <TextBox x:Name="sensor_type" HorizontalAlignment="Left" Width="300"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Style="{StaticResource SettingsFlyoutSectionStyle}">
+            <Button x:Name="sensor_save_button" Width="300">Save</Button>
+            <Button x:Name="sensor_cancel_button" Width="300">Cancel</Button>
+        </StackPanel>
+    </StackPanel>
+
+</SettingsFlyout>

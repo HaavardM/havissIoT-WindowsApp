@@ -1,0 +1,37 @@
+﻿<SettingsFlyout
+    x:Class="HavissIoT.UserFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HavissIoT"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    IconSource="Assets/SmallLogo.png"
+    Title="UserFlyout"
+    d:DesignWidth="346" Unloaded="SettingsFlyout_Unloaded">
+
+    <!-- This StackPanel acts as a root panel for vertical layout of the content sections -->
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+        <StackPanel Style="{StaticResource SettingsFlyoutSectionStyle}">
+            <TextBlock Text="Available users:" Style="{StaticResource TitleTextBlockStyle}"/>
+            <StackPanel Margin="0,7,0,0">
+                <ListView x:Name="available_users" Width="200" Height="400" BorderBrush="Black" BorderThickness="1"/>
+            </StackPanel>
+            <TextBlock Text="Add user:" Style="{StaticResource TitleTextBlockStyle}"/>
+            <StackPanel Margin="0,0,0,0">
+                <Button x:Name="add_user_button" Content="Add" Margin="0,0,0,0" Width="200"/>
+            </StackPanel>
+            <TextBlock Text="Remove user:" Style="{StaticResource TitleTextBlockStyle}"/>
+            <StackPanel Margin="0,0,0,0">
+                <Button x:Name="remove_user_button" Content="Remove" Margin="0,0,0,0" Width="200"/>
+            </StackPanel>
+            
+        </StackPanel>
+        <!-- The StackPanel(s) below define individual content sections -->
+
+        <!-- Content Section 1-->
+
+        <!-- Define more Content Sections below as necessary -->
+
+    </StackPanel>
+</SettingsFlyout>
