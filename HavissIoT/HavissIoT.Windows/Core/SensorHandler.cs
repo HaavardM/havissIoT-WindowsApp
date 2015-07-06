@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace HavissIoT
 {
@@ -59,6 +60,55 @@ namespace HavissIoT
         public void clearSensors()
         {
             this.availableSensors.Clear();
+        }
+
+        public async void refreshSensors()
+        {
+            if (SharedVariables.client.isConnected())
+            {
+                HavissIoTCommandBuilder commandBuilder = new HavissIoTCommandBuilder();
+                if (Config.username.Length > 0)
+                {
+                    if (Config.password.Length > 0)
+                    {
+                        commandBuilder.addUser(Config.username, Config.password);
+                    }
+                    else
+                    {
+                        commandBuilder.addUser(Config.username);
+                    }
+                }
+                commandBuilder.listSensors();
+                String response = await SharedVariables.client.request(commandBuilder.getJsonString());
+                JObject jsonObject = null;
+                JArray jsonArray = null;
+                try
+                {
+                    jsonObject = JObject.Parse(response);
+                    jsonArray = jsonObject.GetValue("r") as JArray;
+                }
+                catch (Exception ex)
+                {
+                    jsonObject = null;
+                    jsonArray = null;
+                }
+                if (jsonArray != null)
+                {
+                    foreach (JObject s in jsonArray)
+                    {
+                        try
+                        {
+                            string sensorName = (string)s.GetValue("name");
+                            string sensorTopic = (string)s.GetValue("topic");
+                            string sensorType = (string)s.GetValue("type");
+                            bool toStore = (bool)s.GetValue("toStore");
+                            IoTSensor sensor = new IoTSensor(sensorName, sensorTopic, sensorType, toStore);
+                            SharedVariables.sensorHandler.addSensor(sensor);
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

@@ -29,9 +29,11 @@ namespace HavissIoT
         {
             this.InitializeComponent();
             this.sensorNames = new List<string>();
-            getSensorNames();
+            this.getSensorNames();
+            this.sensor_select.ItemsSource = this.sensorNames;
         }
 
+        //Get sensor names from sensorhandler
         private void getSensorNames()
         {
             sensorNames.Clear();

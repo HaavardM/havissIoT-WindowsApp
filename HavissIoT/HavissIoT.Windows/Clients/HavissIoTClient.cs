@@ -54,29 +54,6 @@ namespace HavissIoT
                     await message.ShowAsync();
                     new Settings().Show();
                 }
-                else
-                {
-                    while (mClient == null || !mClient.isConnected())
-                    {
-                        try
-                        {
-                            string clientID = await getClientID();
-                            mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
-                        }
-                        catch (Exception ex)
-                        {
-                            e = ex;
-                        }
-                        //If exception were thrown - refresh config file
-                        if (e != null)
-                        {
-                            
-                            await Config.requestConfig();
-                            string clientID = await getClientID();
-                            mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
-                        }
-                    }
-                }
             }
             else
             {

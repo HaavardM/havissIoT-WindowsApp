@@ -111,7 +111,7 @@ namespace HavissIoT
             {
                 string response = await SharedVariables.client.request(commandBuilder.getJsonString());
                 jsonObject = JObject.Parse(response);
-                jsonArray = (JArray)jsonObject.GetValue("r");
+                jsonArray = jsonObject.GetValue("r") as JArray;
             }
             catch (Exception ex)
             {
