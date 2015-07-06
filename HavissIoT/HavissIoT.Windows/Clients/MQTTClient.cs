@@ -16,28 +16,43 @@ namespace HavissIoT
         private string clientID;
         private int qos;
 
+        //Constructor - set variables
         public MQTTClient(string clientID, string address, int port)
         {
             this.clientID = clientID;
-            this.connect(address, port);
+            this.brokerAddress = address;
+            this.brokerPort = port;
+            this.connect(brokerAddress, brokerPort);
             this.mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
         }
-
+        //Event - when messages is recieved
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             IoTSensor sensor = SharedVariables.sensorHandler.getSensorByTopic(e.Topic);
             sensor.updateValue(int.Parse(Encoding.UTF8.GetString(e.Message, 0, e.Message.Length)));
-        }
-
-        
-
+        } 
+        //Connect to MQTT broker
         public void connect(string address, int port)
         {
             this.brokerAddress = address;
             this.brokerPort = port;
             this.mClient = new MqttClient(this.brokerAddress, this.brokerPort, false);
         }
-
+        //Reconnect to broker
+        public void reconnect(string address, int port)
+        {
+            if (mClient != null)
+            {
+                mClient.Disconnect();
+                connect(address, port);
+            }
+        }
+        //Disconnect from broker
+        public void disconnect()
+        {
+            mClient.Disconnect();
+        }
+        //Subscribe to a MQTT topic
         public void subscribeToTopic(string topic)
         {
             switch (Config.mqttQOS)
@@ -53,7 +68,7 @@ namespace HavissIoT
                     break;
             }
         }
-
+        //Check if client is connected to broker
         public bool isConnected()
         {
             return this.mClient.IsConnected;

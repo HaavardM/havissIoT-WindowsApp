@@ -22,7 +22,9 @@ namespace HavissIoT
 {
     public sealed partial class Settings : SettingsFlyout
     {
+        //Avoid uneccesar popups if user button is pressed before settings flyout closes
         private bool userButtonPressed = false;
+
         public Settings()
         {
             this.InitializeComponent();
@@ -38,6 +40,7 @@ namespace HavissIoT
             disconnect_button.IsEnabled = SharedVariables.client.isConnected();
         }
 
+        //Enable settings if switch is on
         private void broker_manual_settings_Toggled(object sender, RoutedEventArgs e)
         {
             broker_address.IsEnabled = broker_manual_settings.IsOn;
@@ -45,6 +48,7 @@ namespace HavissIoT
             mqtt_qos.IsEnabled = broker_manual_settings.IsOn;
         }
 
+        //When settings flyout closes
         private async void SettingsFlyout_Unloaded(object sender, RoutedEventArgs e)
         {
             Config.serverAddress = this.server_address.Text;
@@ -65,6 +69,7 @@ namespace HavissIoT
             }
         }
 
+        //Get user input - should app connect to server?
         private async Task toReconnect()
         {
             if (SharedVariables.client.isConnected())
@@ -85,6 +90,7 @@ namespace HavissIoT
             }
         }
 
+        //Handle responds from message dialog
         private async void toReconnectHandler(IUICommand command)
         {
             switch (command.Label)
@@ -97,7 +103,7 @@ namespace HavissIoT
                     //Do nothing
                     break;
                 case "Connect":
-                    await SharedVariables.client.connect(Config.serverAddress, Config.serverPort);
+                    SharedVariables.client.connect(Config.serverAddress, Config.serverPort);
                     if (SharedVariables.client.isConnected())
                     {
                         SharedVariables.mainPage.refreshSensors();
@@ -114,6 +120,7 @@ namespace HavissIoT
             }
         }
 
+        //If exit button is pressed
         private void exit_button_Click(object sender, RoutedEventArgs e)
         {
             HavissIoTCommandBuilder commandBuilder = new HavissIoTCommandBuilder();
@@ -129,6 +136,7 @@ namespace HavissIoT
             SharedVariables.client.write(commandBuilder.getJsonString());
         }
 
+        //If user button is pressed
         private void users_button_Click(object sender, RoutedEventArgs e)
         {
             this.userButtonPressed = true;
@@ -136,6 +144,7 @@ namespace HavissIoT
             users.Show();
         }
 
+        //If disconnect button is pressed
         private async void disconnect_button_Click(object sender, RoutedEventArgs e)
         {
             await SharedVariables.client.disconnect();

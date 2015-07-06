@@ -46,6 +46,8 @@ namespace HavissIoT
                 {
                     connected = false;
                 }
+                
+                //If client couldnt connect - alert user and open settings flyout
                 if (!connected)
                 {
                     MessageDialog message = new MessageDialog("Couldn't connect to havissIoT server, check if server address and port is correct", "Connection error");
@@ -54,20 +56,25 @@ namespace HavissIoT
                 }
                 else
                 {
-                    try
+                    while (mClient == null || !mClient.isConnected())
                     {
-                        string clientID = await getClientID();
-                        mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
-                    } 
-                    catch(Exception ex) 
-                    {
-                        e = ex;
-                        
-                    }
-                    if(e != null) {
-                        await Config.requestConfig();
-                        string clientID = await getClientID();
-                        mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
+                        try
+                        {
+                            string clientID = await getClientID();
+                            mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
+                        }
+                        catch (Exception ex)
+                        {
+                            e = ex;
+                        }
+                        //If exception were thrown - refresh config file
+                        if (e != null)
+                        {
+                            
+                            await Config.requestConfig();
+                            string clientID = await getClientID();
+                            mClient = new MQTTClient(clientID, Config.brokerAddress, Config.brokerPort);
+                        }
                     }
                 }
             }

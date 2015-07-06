@@ -16,9 +16,11 @@ namespace HavissIoT
         public static volatile string brokerAddress = "";
         public static volatile int brokerPort = 0;
         public static volatile int mqttQOS = 0;
+        public static volatile bool manualBrokerSettings = false;
         public static volatile string username = "";
         public static volatile string password = "";
         
+        //Store application settigs in this class for easier access. 
         static Config() {
             if (ApplicationData.Current.LocalSettings.Values.ContainsKey("server_address"))
             {
@@ -48,7 +50,13 @@ namespace HavissIoT
             {
                 password = (string)ApplicationData.Current.LocalSettings.Values["password"];
             }
+            if (ApplicationData.Current.LocalSettings.Values.ContainsKey("manual_broker_settings"))
+            {
+                manualBrokerSettings = (bool)ApplicationData.Current.LocalSettings.Values["manual_broker_settings"];
+            }
         }
+
+        //Save application settings 
         public static void saveSettings()
         {
             ApplicationData.Current.LocalSettings.Values["server_address"] = serverAddress;
@@ -58,33 +66,40 @@ namespace HavissIoT
             ApplicationData.Current.LocalSettings.Values["mqtt_qos"] = mqttQOS;
             ApplicationData.Current.LocalSettings.Values["username"] = username;
             ApplicationData.Current.LocalSettings.Values["password"] = password;
+            ApplicationData.Current.LocalSettings.Values["manual_broker_settings"] = manualBrokerSettings;
         }
 
+        //Request configuration from server
         public async static Task requestConfig()
         {
             HavissIoTCommandBuilder commandBuilder = new HavissIoTCommandBuilder();
-            if (Config.password.Length > 0 && Config.username.Length > 0)
+
+            //Add user (and password) if available
+            if (password.Length > 0 && username.Length > 0)
             {
-                commandBuilder.addUser(Config.username, Config.password);
+                commandBuilder.addUser(username, password);
             }
-            else if(Config.username.Length > 0)
+            else if(username.Length > 0)
             {
-                commandBuilder.addUser(Config.username);
+                commandBuilder.addUser(username);
             }
+            //Add request for server configuration
             commandBuilder.getConfig();
             if (SharedVariables.client.isConnected())
             {
+                //Store response in string
                 string response = await SharedVariables.client.request(commandBuilder.getJsonString());
-                JObject jsonObject = JObject.Parse(response);
+                //Parses response to an jsonobject
                 try
                 {
-                    Config.brokerAddress = (string) jsonObject.GetValue("brokerAddress");
-                    Config.brokerPort = (int)jsonObject.GetValue("brokerPort");
-                    Config.mqttQOS = (int)jsonObject.GetValue("qos");
+                    JObject jsonObject = JObject.Parse(response);
+                    brokerAddress = (string) jsonObject.GetValue("brokerAddress");
+                    brokerPort = (int)jsonObject.GetValue("brokerPort");
+                    mqttQOS = (int)jsonObject.GetValue("qos");
                 }
                 catch (Exception ex)
                 {
-                    //TODO: Handle exception
+                    //TODO Handle exception
                 }
             }
                         

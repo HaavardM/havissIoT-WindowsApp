@@ -82,6 +82,7 @@ namespace HavissIoT
             }
         }
 
+        //Refresh sensors when button is pressed
         private void refresh_button_Click(object sender, RoutedEventArgs e)
         {
             if (SharedVariables.client.isConnected())
@@ -90,6 +91,7 @@ namespace HavissIoT
             }
         }
 
+        //Request a list of all sensors and refresh local list
         public async void refreshSensors()
         {
             Exception e = null;
@@ -139,6 +141,7 @@ namespace HavissIoT
             }
         }
 
+        //When a new sensor is selected
         private void sensor_select_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.sensor_select.Items.Count > 0)
@@ -150,6 +153,7 @@ namespace HavissIoT
             }
         }
 
+        //Method to run when the client is disconnecting from server - some UI elements must change
         public void onClientDisconnect()
         {
             this.connection_status.Text = "Not connected";
@@ -160,11 +164,18 @@ namespace HavissIoT
 
         }
 
+        //Open new page on button press
         private void add_remove_button_Click(object sender, RoutedEventArgs e)
         {
             addRemoveSensors addRemove = new addRemoveSensors();
             this.Frame.Navigate(typeof(addRemoveSensors), null);
 
+        }
+
+        //Show a message dialog with a message and a title. 
+        public async void showMessageDialog(string message, string title)
+        {
+           await new MessageDialog(message, title).ShowAsync();
         }
      
     }
