@@ -28,7 +28,6 @@ namespace HavissIoT
         //Connects to server
         public async Task connect(string address, int port)
         {
-            Exception e = null;
             if (!this.connected)
             {
                 try
@@ -42,7 +41,7 @@ namespace HavissIoT
                     this.reader.InputStreamOptions = InputStreamOptions.Partial;
                     connected = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     connected = false;
                 }
@@ -85,7 +84,7 @@ namespace HavissIoT
                     await this.disconnect();
                     await this.connect(Config.serverAddress, Config.serverPort);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     connected = false;
                 }

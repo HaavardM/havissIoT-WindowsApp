@@ -148,7 +148,7 @@ namespace HavissIoT
             {
                 string sensorName = sensorNames[sensor_select.SelectedIndex];
                 this.currentSensor = SharedVariables.sensorHandler.getSensorByName(sensorName);
-                (values_chart.Series[0] as LineSeries).ItemsSource = this.currentSensor.getValues();
+                //(values_chart.Series[0] as LineSeries).ItemsSource = this.currentSensor.getValues();
                 this.sensor_name.Text = this.currentSensor.getName();
             }
         }

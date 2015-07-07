@@ -29,7 +29,10 @@ namespace HavissIoT
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             IoTSensor sensor = SharedVariables.sensorHandler.getSensorByTopic(e.Topic);
-            sensor.updateValue(int.Parse(Encoding.UTF8.GetString(e.Message, 0, e.Message.Length)));
+            if (sensor != null)
+            {
+                sensor.updateValue(Encoding.UTF8.GetString(e.Message, 0, e.Message.Length));
+            }
         } 
         //Connect to MQTT broker
         public void connect(string address, int port)

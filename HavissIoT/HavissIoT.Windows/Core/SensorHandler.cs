@@ -105,6 +105,10 @@ namespace HavissIoT
                             IoTSensor sensor = new IoTSensor(sensorName, sensorTopic, sensorType, toStore);
                             SharedVariables.sensorHandler.addSensor(sensor);
                         }
+                        catch (Exception ex)
+                        {
+                            //TODO handle exception
+                        }
                     }
                 }
 
