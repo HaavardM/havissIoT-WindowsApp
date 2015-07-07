@@ -16,11 +16,11 @@ namespace HavissIoT
         private string type;
         private bool storage;
         private bool isActive;
-        private long lastUpdated;
+        /*
         private Stopwatch timer;
-        //private int firstLog = -1;
-        private string dataType;
-        //private List<string> values = new List<string>();
+        private int firstLog = -1;
+        private List<string> values = new List<string>();
+         * */
 
         //Constructor
         public IoTSensor(String name, String topic, String type, bool toStore)

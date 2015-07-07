@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Data;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HavissIoT
 {
@@ -100,6 +101,7 @@ namespace HavissIoT
                 catch (Exception ex)
                 {
                     //TODO Handle exception
+                    Debug.WriteLine(ex.Message);
                 }
             }
                         

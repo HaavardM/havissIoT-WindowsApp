@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HavissIoT
 {
@@ -91,6 +92,8 @@ namespace HavissIoT
                 {
                     jsonObject = null;
                     jsonArray = null;
+                    Debug.WriteLine(ex.Message);
+                    
                 }
                 if (jsonArray != null)
                 {
@@ -108,6 +111,7 @@ namespace HavissIoT
                         catch (Exception ex)
                         {
                             //TODO handle exception
+                            Debug.WriteLine(ex.Message);
                         }
                     }
                 }

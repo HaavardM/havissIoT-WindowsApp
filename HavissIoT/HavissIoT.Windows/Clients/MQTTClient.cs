@@ -14,7 +14,6 @@ namespace HavissIoT
         private string brokerAddress;
         private int brokerPort;
         private string clientID;
-        private int qos;
 
         //Constructor - set variables
         public MQTTClient(string clientID, string address, int port)
