@@ -14,8 +14,6 @@ namespace HavissIoT
         private JObject arguments;
         private string username;
         private string password;
-        private bool hasCommad = false;
-        private bool hasArgs = false;
 
         public HavissIoTCommandBuilder()
         {

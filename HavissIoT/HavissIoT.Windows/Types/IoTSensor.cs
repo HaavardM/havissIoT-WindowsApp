@@ -12,43 +12,40 @@ namespace HavissIoT
     {
         private string name;
         private string topic;
-        private int lastValue;
+        private string lastValue;
         private string type;
         private bool storage;
         private bool isActive;
-        private long lastUpdated;
+        /*
         private Stopwatch timer;
         private int firstLog = -1;
-        private string dataType;
-        private List<ChartEntry> values = new List<ChartEntry>();
+        private List<string> values = new List<string>();
+         * */
 
         //Constructor
         public IoTSensor(String name, String topic, String type, bool toStore)
         {
-            this.timer = new Stopwatch();
-            this.timer.Start();
+            //this.timer = new Stopwatch();
+            //this.timer.Start();
             this.topic = topic;
             this.name = name;
             this.type = type;
             this.storage = toStore;
-            Random random = new Random();
         }
 
         //Updates last value
-        public void updateValue(int value)
+        public void updateValue(string value)
         {
-            this.timer.Stop();
-            this.values.Add(new ChartEntry() { Value = value, Time =  (int)(this.timer.ElapsedMilliseconds/1000) });
-            this.timer.Start();
             this.lastValue = value;
             this.isActive = true;
         }
 
         //Get list of values
-        public List<ChartEntry> getValues()
+        /*public List<ChartEntry> getValues()
         {
             return this.values;
         }
+        */
         //Change sensor topic
         public void changeTopic(String topic)
         {
@@ -86,7 +83,7 @@ namespace HavissIoT
         }
 
         //Get latest value
-        public int getLastValue()
+        public string getLastValue()
         {
             return this.lastValue;
         }

@@ -16,6 +16,7 @@ using Windows.UI.Popups;
 using Windows.Data;
 using Windows.Storage;
 using System.Threading.Tasks;
+using System.Diagnostics;
 // The Settings Flyout item template is documented at http://go.microsoft.com/fwlink/?LinkId=273769
 
 namespace HavissIoT
@@ -51,16 +52,24 @@ namespace HavissIoT
         //When settings flyout closes
         private async void SettingsFlyout_Unloaded(object sender, RoutedEventArgs e)
         {
-            Config.serverAddress = this.server_address.Text;
-            Config.serverPort = int.Parse(this.server_port.Text);
-            Config.username = this.username.Text;
-            Config.password = this.password.Password;
-            //Config.password = this.password
-            if (broker_manual_settings.IsOn)
+            try
             {
-                Config.brokerAddress = this.broker_address.Text;
-                Config.brokerPort = int.Parse(this.broker_port.Text);
-                Config.mqttQOS = (int) this.mqtt_qos.SelectedItem;
+                Config.serverAddress = this.server_address.Text;
+                Config.serverPort = int.Parse(this.server_port.Text);
+                Config.username = this.username.Text;
+                Config.password = this.password.Password;
+
+                if (broker_manual_settings.IsOn)
+                {
+                    Config.brokerAddress = this.broker_address.Text;
+                    Config.brokerPort = int.Parse(this.broker_port.Text);
+                    Config.mqttQOS = (int)this.mqtt_qos.SelectedItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                new Settings().Show();
+                Debug.WriteLine(ex.Message);
             }
             Config.saveSettings();
             if (!userButtonPressed)
@@ -103,7 +112,7 @@ namespace HavissIoT
                     //Do nothing
                     break;
                 case "Connect":
-                    SharedVariables.client.connect(Config.serverAddress, Config.serverPort);
+                    await SharedVariables.client.connect(Config.serverAddress, Config.serverPort);
                     if (SharedVariables.client.isConnected())
                     {
                         SharedVariables.mainPage.refreshSensors();

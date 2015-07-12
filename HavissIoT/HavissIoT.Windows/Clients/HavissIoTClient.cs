@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
+using System.Diagnostics;
 
 namespace HavissIoT
 {
@@ -21,14 +22,11 @@ namespace HavissIoT
         private int port;
         private DataWriter writer;
         private DataReader reader;
-        private MQTTClient mClient;
-
         private volatile bool connected = false;
 
         //Connects to server
         public async Task connect(string address, int port)
         {
-            Exception e = null;
             if (!this.connected)
             {
                 try
@@ -42,17 +40,10 @@ namespace HavissIoT
                     this.reader.InputStreamOptions = InputStreamOptions.Partial;
                     connected = true;
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
                     connected = false;
-                }
-                
-                //If client couldnt connect - alert user and open settings flyout
-                if (!connected)
-                {
-                    MessageDialog message = new MessageDialog("Couldn't connect to havissIoT server, check if server address and port is correct", "Connection error");
-                    await message.ShowAsync();
-                    new Settings().Show();
+                    Debug.WriteLine(e.Message);
                 }
             }
             else
@@ -74,21 +65,21 @@ namespace HavissIoT
         //Reconnects to server
         public async Task reconnect(string address, int port)
         {
-            if (!this.connected)
+            try
             {
-                await this.connect(address, port);
-            }
-            else
-            {
-                try
+                if (!this.connected)
+                {
+                    await this.connect(address, port);
+                }
+                else
                 {
                     await this.disconnect();
                     await this.connect(Config.serverAddress, Config.serverPort);
                 }
-                catch (Exception e)
-                {
-                    connected = false;
-                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
         }
         //Check if client is connected
@@ -121,7 +112,6 @@ namespace HavissIoT
 
         public async void write(string message)
         {
-            Exception e = null;
             try
             {
                 byte[] toWrite = Encoding.UTF8.GetBytes(message + Environment.NewLine);
@@ -131,41 +121,32 @@ namespace HavissIoT
             }
             catch (Exception ex)
             {
-                e = ex;
-            }
-            if (e != null)
-            {
-                MessageDialog errorMessage = new MessageDialog("Error writing to socket - " + e.Message, "ERROR");
-                await errorMessage.ShowAsync();
-                this.closeConnection();
+                //TODO Handle exception
+                Debug.WriteLine(ex.Message);
             }
         }
 
+        //Load response from server
         private async Task<string> getResponse()
         {
-            Exception e = null;
             try
             {
                 await this.reader.LoadAsync(8192);
                 string message = this.reader.ReadString(reader.UnconsumedBufferLength);
                 if (message.EndsWith("\n"))
                 {
+                    //Return message revcieved from server - without newline character
                     return message.Substring(0, message.Length - 1); //Remove line end
                 }
                 else
                 {
+                    //Return null if message doesent end with newline - not properly formatted
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                e = ex;
-            }
-            if (e != null)
-            {
-                MessageDialog errorMessage = new MessageDialog("Error reading from socket - " + e.Message, "ERROR");
-                await errorMessage.ShowAsync();
-                this.closeConnection();
+                Debug.WriteLine(ex.Message);
             }
             return null;
         }
@@ -173,7 +154,6 @@ namespace HavissIoT
         //Make a request
         public async Task<string> request(string message)
         { 
-            Exception e = null;
             try
             {
                 this.write(message);
@@ -190,12 +170,7 @@ namespace HavissIoT
             }
             catch (Exception ex)
             {
-                e = ex;
-            }
-            if (e != null)
-            {
-                MessageDialog errorMessage = new MessageDialog("Error on socket - " + e.Message);
-                await errorMessage.ShowAsync();
+                Debug.WriteLine(ex.Message);
             }
             return null;
         }

@@ -12,8 +12,5 @@ namespace HavissIoT
         public static UserHandler userHandler;
         public static SensorHandler sensorHandler;
         public static MainPage mainPage;
-        public static MQTTClient mClient;
-
-
     }
 }
