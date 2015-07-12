@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HavissIoT
 {
@@ -62,7 +63,7 @@ namespace HavissIoT
             this.availableSensors.Clear();
         }
 
-        public async void refreshSensors()
+        public async Task refreshSensors()
         {
             if (SharedVariables.client.isConnected())
             {
@@ -104,6 +105,10 @@ namespace HavissIoT
                             bool toStore = (bool)s.GetValue("toStore");
                             IoTSensor sensor = new IoTSensor(sensorName, sensorTopic, sensorType, toStore);
                             SharedVariables.sensorHandler.addSensor(sensor);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
                         }
                     }
                 }

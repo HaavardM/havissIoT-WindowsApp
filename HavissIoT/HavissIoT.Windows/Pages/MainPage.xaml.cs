@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -94,51 +95,33 @@ namespace HavissIoT
         //Request a list of all sensors and refresh local list
         public async void refreshSensors()
         {
-            Exception e = null;
-            HavissIoTCommandBuilder commandBuilder = new HavissIoTCommandBuilder();
-            if (Config.password.Length > 0)
+            await SharedVariables.sensorHandler.refreshSensors();
+            foreach (IoTSensor s in SharedVariables.sensorHandler.getSensors())
             {
-                commandBuilder.addUser(Config.username, Config.username);
-            }
-            else
-            {
-                commandBuilder.addUser(Config.username);
-            }
-            commandBuilder.listSensors();
-            JObject jsonObject = null;
-            JArray jsonArray = null;
-            try
-            {
-                string response = await SharedVariables.client.request(commandBuilder.getJsonString());
-                jsonObject = JObject.Parse(response);
-                jsonArray = jsonObject.GetValue("r") as JArray;
-            }
-            catch (Exception ex)
-            {
-                e = ex;
-            }
-            if (e != null)
-            {
-                MessageDialog errorMessage = new MessageDialog("Error while refreshing sensors - " + e.Message);
-                await errorMessage.ShowAsync();
+                if (!sensorNames.Contains(s.getName()))
+                {
+                    sensorNames.Add(s.getName());
+                }
             }
 
-            //Only go through data if there is data to read
-            if (jsonObject != null && jsonArray != null)
+            foreach (String s in sensorNames)
             {
-                SharedVariables.sensorHandler.clearSensors();
-                this.sensorNames.Clear();
-                foreach (JObject s in jsonArray)
+                bool remove = true;
+                foreach (IoTSensor i in SharedVariables.sensorHandler.getSensors())
                 {
-                    string sensorName = (string)s.GetValue("name");
-                    string sensorTopic = (string)s.GetValue("topic");
-                    string sensorType = (string)s.GetValue("type");
-                    bool toStore = (bool)s.GetValue("toStore");
-                    SharedVariables.sensorHandler.addSensor(new IoTSensor(sensorName, sensorTopic, sensorType, toStore));
-                    sensorNames.Add(sensorName);
+                    if (s.CompareTo(i.getName()) == 0)
+                    {
+                        remove = false;
+                        break;
+                    }
                 }
-                this.sensor_select.ItemsSource = sensorNames;
+                if (remove)
+                {
+                    sensorNames.Remove(s);
+                }
+
             }
+            sensor_select.ItemsSource = sensorNames;
         }
 
         //When a new sensor is selected
