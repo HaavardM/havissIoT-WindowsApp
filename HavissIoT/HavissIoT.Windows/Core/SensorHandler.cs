@@ -90,6 +90,7 @@ namespace HavissIoT
                 }
                 catch (Exception ex)
                 {
+                    Debug.WriteLine(ex.Message);
                     jsonObject = null;
                     jsonArray = null;
                 }
@@ -112,7 +113,6 @@ namespace HavissIoT
                         }
                     }
                 }
-
             }
         }
     }
